@@ -1,0 +1,30 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WestFlix</title>
+	<script src="https://unpkg.com/htmx.org@2.0.2"></script>
+</head>
+<body>
+	<header>
+		<h1>
+			WestFlix
+		</h1>
+		<nav>
+			<ul>
+				<li>Categories</li>
+				<li>Popular</li>
+				<li>
+					<a href="/login">
+						Login
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{{ template "content" . }}
+	</section>
+</body>
+</html>
+{{ end }}

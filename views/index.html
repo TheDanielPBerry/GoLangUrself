@@ -1,0 +1,12 @@
+{{ define "content" }}
+	{{ range . }}
+		<div>
+			<h4>
+				{{.Title}}
+			</h4>
+			<p>
+				{{.Description}}
+			</p>
+		</div>
+	{{ end }}
+{{ end }}
