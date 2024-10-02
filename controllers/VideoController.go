@@ -5,23 +5,20 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"westflix/models"
-	"html/template"
 )
 
-type VideoList struct {
-	videos []models.Video
-}
 
 func ListVideos(resp http.ResponseWriter, req *http.Request) {
-	videos := models.GetVideos()
+	PopulateViewBag(req)
 
-	tmpl, err := template.New("").ParseFiles("views/index.html", "views/base.html")
-	if(err != nil) {
-		panic(err)
-	}
-	fmt.Println(videos)
-	tmpl.ExecuteTemplate(resp, "base", videos)
+	tmpl := getTemplate("index")
+
+	viewBag["videos"] = models.GetVideos()
+
+	tmpl.ExecuteTemplate(resp, "base", viewBag)
+
 }
+
 
 func ViewVideo(resp http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)

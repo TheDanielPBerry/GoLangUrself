@@ -1,0 +1,46 @@
+{{ define "content" }}
+<form id="register_form" action="/register" method="POST">
+
+	{{ if .PostBack.error }}
+		<div class="error-container">
+			{{ .PostBack.error }}
+		</div>
+	{{ end }}
+
+	<div class="form-group">
+		<label for="fullname">Full Name:</label>
+		<input type="text"
+			name="fullname"
+			id="fullname"
+			value="{{.PostBack.fullname}}"
+			/>
+	</div>
+	<div class="form-group">
+		<label for="email">Email:</label>
+		<input type="email"
+			name="email"
+			id="email"
+			value="{{.PostBack.email}}"
+			/>
+	</div>
+	<div class="form-group">
+		<label for="password">Password:</label>
+		<input type="password"
+			name="password"
+			id="password"
+			/>
+	</div>
+	<div class="form-group">
+		<label for="password_confirmation">Confirm Password:</label>
+		<input type="password"
+			name="password_confirmation"
+			id="password_confirmation"
+			/>
+	</div>
+
+	<button type="submit">
+		Register
+	</button>
+	<a href="/login">Login</a>
+</form>
+{{ end }}
