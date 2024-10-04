@@ -1,8 +1,7 @@
 # Westflix
 
 ## Tech Stack
-Frontend: HTMX
-Backend: GO
-Services: TensorFlow
-Database: sqlite3
-
+Frontend: HTMX  
+Backend: GO  
+Services: TensorFlow   
+Database: sqlite3  
