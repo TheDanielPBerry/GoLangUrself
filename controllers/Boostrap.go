@@ -20,7 +20,7 @@ func PopulateViewBag(req *http.Request) {
 	userId, ok := session.Values["UserId"].(int)
 	viewBag["authenticated"] = false;
 	if ok {
-		viewBag["authenticated"] = userId > 0 
+		viewBag["authenticated"] = userId > 0
 		user, ok := models.GetUserById(userId)
 		if ok {
 			viewBag["user"] = user

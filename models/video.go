@@ -10,6 +10,8 @@ type Video struct {
 	VideoId string `db:"VideoId"`
 	Title sql.NullString `db:"Title"`
 	Description sql.NullString `db:"Description"`
+	Year int `db:"Year"`
+	ImgPath sql.NullString `db:"ImgPath"`
 }
 
 func GetVideos() []Video {
