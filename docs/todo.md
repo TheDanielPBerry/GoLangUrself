@@ -6,15 +6,15 @@
 - [ ] Prototypes
 - [ ] Video Player needs a pause/play button to stop the timer
 - [ ] Password Recovery Option (clemson email)
-- [ ]
+- [ ] Video List View
+- [ ] 
 ### Backend
-- [ ]
-- [ ]
+- [ ] Todo Like/Dislike System
+- [ ] Add to Queue
+- [ ] Add to 
 ### Data Analysis
 - [ ] Calculate Average Watch Time Percentage metrics for a video
 - [ ] Calculate Average Ratings of Each Movie
-- [ ] 
-- [ ] 
 - [ ] 
 
 ## In Progress

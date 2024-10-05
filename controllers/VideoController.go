@@ -43,7 +43,7 @@ func ViewVideo(resp http.ResponseWriter, req *http.Request) {
 	userId, ok := session.Values["UserId"].(int)
 	if !ok || userId <= 0 {
 		//Is not properly authenticated
-		http.Redirect(resp, req, "/", http.StatusSeeOther)
+		http.Redirect(resp, req, "/login", http.StatusSeeOther)
 		return
 	}
 
@@ -75,7 +75,10 @@ func RecordWatchEvent(resp http.ResponseWriter, req *http.Request) {
 	userId, ok := session.Values["UserId"].(int)
 	if !ok || userId <= 0 {
 		//Is not properly authenticated
-		http.Redirect(resp, req, "/", http.StatusSeeOther)
+		json.NewEncoder(resp).Encode(map[string]interface{} {
+			"error": "Invalid User",
+			"errorCode": 403,
+		})
 		return
 	}
 

@@ -1,12 +1,16 @@
 {{ define "content" }}
-<div class="text-center">
+<div class="text-center" id="video-player">
 	<img src="/static/videos/{{.video.VideoId}}.webp" />
 </div>
 <span id="progress">0:00:00</span>
 /
 <span id="TotalRuntime">{{ .video.TotalRuntimeSeconds }}</span>
+
+<div>
+	<input type="range" id="progress-slider" min="0" max="{{.video.TotalRuntimeSeconds}}" value="0" style="width: 80%;" />
+</div>
 <script type="text/javascript">
-	var jsonData = JSON.parse({{ .jsonData }})
+	var jsonData = JSON.parse({{ .jsonData }});
 </script>
 <script src="/static/js/watch.js"></script>
 
