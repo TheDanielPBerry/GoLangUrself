@@ -1,0 +1,13 @@
+{{ define "content" }}
+<div class="text-center">
+	<img src="/static/videos/{{.video.VideoId}}.webp" />
+</div>
+<span id="progress">0:00:00</span>
+/
+<span id="TotalRuntime">{{ .video.TotalRuntimeSeconds }}</span>
+<script type="text/javascript">
+	var jsonData = JSON.parse({{ .jsonData }})
+</script>
+<script src="/static/js/watch.js"></script>
+
+{{ end }}

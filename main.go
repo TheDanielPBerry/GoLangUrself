@@ -13,7 +13,6 @@ func main() {
 	r := mux.NewRouter()
 
 
-	r.HandleFunc("/", controllers.ListVideos)
 
 	r.HandleFunc("/register", func(resp http.ResponseWriter, req *http.Request) {
 		controllers.PopulateViewBag(req)
@@ -41,10 +40,16 @@ func main() {
 		models.CloseDB()
 	})
 
-	r.HandleFunc("/watch/{videoId}/", controllers.ViewVideo)
+	r.HandleFunc("/v/{videoId}/watch/{progress}/", controllers.RecordWatchEvent)
+	r.HandleFunc("/v/{videoId}/", controllers.ViewVideo)
 
-	fs := http.FileServer(http.Dir("static/"))
-	r.Handle("/static/", http.StripPrefix("/static/", fs))
+	fs := http.FileServer(http.Dir("assets/"))
+	r.Handle("/static/js/{$}", http.StripPrefix("/static/", fs))
+	r.Handle("/static/css/{$}", http.StripPrefix("/static/", fs))
+	r.Handle("/static/thumbnails/{$}", http.StripPrefix("/static/", fs))
+	r.Handle("/static/videos/{$}", http.StripPrefix("/static/", fs))
+
+	r.HandleFunc("/", controllers.ListVideos)
 
 	log.Fatal(http.ListenAndServe(":80", r))
 }

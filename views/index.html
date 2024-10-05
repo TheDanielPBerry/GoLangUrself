@@ -7,6 +7,17 @@
 			<p>
 				{{.Description}}
 			</p>
+			<p>
+				{{.RuntimeDisplay}}
+			</p>
+			<p>
+				{{.MPARating}}
+			</p>
+			<p>
+				<a href="/v/{{.VideoId}}/">
+					<img src="/static/thumbnails/{{.VideoId}}" />
+				</a>
+			</p>
 		</div>
 	{{ end }}
 {{ end }}

@@ -7,11 +7,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-
 type User struct {
 	Id int `db:"Id"`
 	Email string `db:"Email"`
 	PasswordHash string `db:"PasswordHash"`
+	DateAdded string `db:"DateAdded"`
+	DateModified string `db:"DateModified"`
 	FullName string `db:"FullName"`
 	Password string
 }
@@ -127,4 +128,8 @@ func AuthenticateLogin(email string, password string) (*User, error) {
 
 	return user, nil
 }
+
+
+
+
 
