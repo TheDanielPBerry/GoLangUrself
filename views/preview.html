@@ -1,9 +1,9 @@
 {{ define "preview" }}
-	<h5>
+	<h4>
 		{{ .Title.String }}
-		{{ .Year }}
-	</h5>
-	<p>
+		({{ .Year }})
+	</h4>
+	<p class="description">
 		{{ .Description.String }}
 	</p>
 	<p>

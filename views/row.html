@@ -2,15 +2,11 @@
 <div class="row-container">
 	<div class="row">
 		{{ range . }}
-			<div class="thumbnail" 
-				hx-get="/v/{{ .VideoId }}/preview"
-				hx-trigger="click"
-				hx-swap="innerHTML"
-				hx-target="next .preview">
+			<div class="thumbnail" data-video-id="{{ .VideoId }}">
 					<img src="/static/thumbnails/{{ .VideoId }}" draggable="false" />
 			</div>
 		{{ end }}
 	</div>
-	<div class="preview"></div>
+	<div class="preview hide"></div>
 </div>
 {{ end }}

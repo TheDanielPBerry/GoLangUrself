@@ -88,6 +88,9 @@ header #account-menu::after {
 	color: #eee;
 	font-weight: bold;
 }
+.row-container {
+	user-select: none;
+}
 .row {
 	display: flex;
 	flex-direction: row;
@@ -102,29 +105,53 @@ header #account-menu::after {
 .thumbnail {
 	scroll-snap-align: start;
 	cursor: pointer;
+	z-index: 2;
 }
 .thumbnail img {
 	height: 18em;
 	border: 1px inset #ccc0;
 }
-.thumbnail img:hover, .thumbnail-focus img {
+.thumbnail img:hover, .thumbnail[focus=focus] img {
 	opacity: 0.7;
-	border: 1px inset #ccca;
+	border-color: #cccc;
 }
+/* Preview Section */
 .preview {
-	background-color: #888;
+	background-color: #c0c0c0f8;
+	position:absolute;
+	z-index: 4;
+	padding: 1em;
+	text-shadow: 2px 2px 5px #fffd;
+	border-bottom: 2px inset black;
 }
 .preview .watch-video {
 	border-radius: 2px;
 	color: var(--secondary-text-color);
 	background-color: var(--primary-button-color);
-	font-size: 1.2em;
-	padding: 0.5rem 0.8rem;
+	font-size: 1.4em;
+	padding: 0.6rem 2.0rem;
 	cursor: pointer;
+	text-shadow: none;
 }
 .preview .watch-video:hover {
 	opacity: 0.9;
 }
+.preview .description {
+	max-height: 70px;
+	overflow-y: auto;
+	margin: 0.5em;
+	border: 1px solid #ddd;
+	padding: 0.2em;
+	line-height: 1.1;
+	scrollbar-width: thin;
+	border-radius: 4px;
+}
+@media only screen and (max-width: 672px) {
+	.preview .description {
+		max-height: 120px;
+	}
+}
+/* End preview section */
 /* End Row Section */
 
 
