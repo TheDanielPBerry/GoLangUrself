@@ -40,8 +40,8 @@ func main() {
 		models.CloseDB()
 	})
 
-	r.HandleFunc("/v/{videoId}/watch/{progress}/", controllers.RecordWatchEvent)
-	r.HandleFunc("/v/{videoId}/", controllers.ViewVideo)
+	r.HandleFunc("/v/{videoId}/watch/{progress}", controllers.RecordWatchEvent)
+	r.HandleFunc("/v/{videoId}", controllers.ViewVideo)
 
 	fs := http.FileServer(http.Dir("assets/"))
 	r.Handle("/static/js/{$}", http.StripPrefix("/static/", fs))

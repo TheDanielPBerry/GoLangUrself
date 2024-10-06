@@ -20,7 +20,7 @@ window.onload = () => {
 			myHeaders.append("Content-Type", "application/json");
 
 			let videoId = jsonData['video']['VideoId'];
-			let url = `/v/${videoId}/watch/${timer}/`;
+			let url = `/v/${videoId}/watch/${timer}`;
 
 			if(!jsonData?.watchEvent?.WatchEventId) {
 				fetch(url, {
@@ -51,11 +51,13 @@ window.onload = () => {
 	ProgressTime.innerText = ConvertToReadableRuntime(timer);
 	ProgressSlider.value = timer;
 
+	//When user clicks progress select
 	ProgressSlider.addEventListener('input', (e) => {
 		paused = true;
 		ProgressTime.innerText = ConvertToReadableRuntime(e.target.value);
 	});
-	
+
+	//When user mouseups from slider
 	ProgressSlider.addEventListener('change', (e) => {
 		paused = false;
 		timer = e.target.value;
@@ -75,6 +77,7 @@ window.onload = () => {
 	}, 1000);
 
 	window.addEventListener('beforeunload', function (e) {
+		//Save the watch time when leaving the page
 		RecordWatchEvent();
 	});
 };
