@@ -1,0 +1,16 @@
+{{ define "row" }}
+<div class="row-container">
+	<div class="row">
+		{{ range . }}
+			<div class="thumbnail" 
+				hx-get="/v/{{ .VideoId }}/preview"
+				hx-trigger="click"
+				hx-swap="innerHTML"
+				hx-target="next .preview">
+					<img src="/static/thumbnails/{{ .VideoId }}" draggable="false" />
+			</div>
+		{{ end }}
+	</div>
+	<div class="preview"></div>
+</div>
+{{ end }}

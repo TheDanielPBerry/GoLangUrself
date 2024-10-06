@@ -41,6 +41,7 @@ func main() {
 	})
 
 	r.HandleFunc("/v/{videoId}/watch/{progress}", controllers.RecordWatchEvent)
+	r.HandleFunc("/v/{videoId}/preview", controllers.GetVideoPreview)
 	r.HandleFunc("/v/{videoId}", controllers.ViewVideo)
 
 	fs := http.FileServer(http.Dir("assets/"))

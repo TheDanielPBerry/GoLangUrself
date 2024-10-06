@@ -1,4 +1,4 @@
-window.onload = () => {
+window.addEventListener('load', () => {
 	var paused = false;
 	var timer = jsonData?.watchEvent?.ProgressSeconds ?? 0;
 
@@ -80,4 +80,4 @@ window.onload = () => {
 		//Save the watch time when leaving the page
 		RecordWatchEvent();
 	});
-};
+});

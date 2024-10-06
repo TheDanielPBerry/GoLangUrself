@@ -6,14 +6,28 @@
 - [ ] Prototypes
 - [ ] Video Player needs a pause/play button to stop the timer
 - [ ] Password Recovery Option (clemson email)
-- [ ] Video List View
-- [ ] 
+- [x] Video List View
+- [x] Navbar
+- [x] Fancy video row scrolling
+- [ ] Settings Page
+- [ ] Account Dropdown
+
+#### Display Following Categories on Home Page in a Row:
+- [x] Most Popular
+- [x] Continue Watching
+- [ ] For You
+- [ ] Queue List
+- [ ] Format Preview Tray
+- [ ] Close Preview tray on click
+- [ ] Animate Preview Tray
+
 ### Backend
 - [ ] Todo Like/Dislike System
 - [ ] Add to Queue
-- [ ] Add to 
+- [ ]
 ### Data Analysis
-- [ ] Calculate Average Watch Time Percentage metrics for a video
+- [x] Calculate Average Watch Time Percentage metrics for a video
+- [x] Calculate Total Watch Time for each video
 - [ ] Calculate Average Ratings of Each Movie
 - [ ] 
 

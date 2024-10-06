@@ -1,10 +1,17 @@
 {{ define "account" }}
-	<div>
+	<a id="account-menu">
 		{{ .user.FullName }}
-	</div>
-	<div>
-		<a href="/logout">
-			Logout
-		</a>
-	</div>
+	</a>
+	<ul class="dropdown-menu hide">
+		<li>
+			<a href="/settings">
+				Settings
+			</a>
+		</li>
+		<li>
+			<a href="/logout">
+				Logout
+			</a>
+		</li>
+	</ul>
 {{ end }}

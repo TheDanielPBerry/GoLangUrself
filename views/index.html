@@ -1,23 +1,25 @@
 {{ define "content" }}
-	{{ range .videos }}
-		<div>
-			<h4>
-				{{.Title}}
-			</h4>
-			<p>
-				{{.Description}}
-			</p>
-			<p>
-				{{.RuntimeDisplay}}
-			</p>
-			<p>
-				{{.MPARating}}
-			</p>
-			<p>
-				<a href="/v/{{.VideoId}}">
-					<img src="/static/thumbnails/{{.VideoId}}" />
-				</a>
-			</p>
-		</div>
+	{{ if .forYou }}
+		<h3 class="row-title">
+			For You
+		</h3>
+		{{ template "row" .forYou }}
 	{{ end }}
+	<h3 class="row-title">
+		Most Popular
+	</h3>
+	{{ template "row" .mostPopular }}
+	{{ if .recentlyWatched }}
+		<h3 class="row-title">
+			Continue Watching
+		</h3>
+		{{ template "row" .recentlyWatched }}
+	{{ end }}
+	{{ if .backlog }}
+		<h3 class="row-title">
+			Queue
+		</h3>
+		{{ template "row" .backlog }}
+	{{ end }}
+	<script type="text/javascript" src="/static/js/index.js"></script>
 {{ end }}

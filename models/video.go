@@ -40,6 +40,55 @@ func GetVideos() []Video {
 }
 
 
+func GetMostPopularVideos() *[]Video {
+	sql := `SELECT * FROM (
+		SELECT awt.VideoId
+		FROM AverageWatchTimes awt
+		ORDER BY awt.TotalWatchTime DESC
+		LIMIT 40
+	)
+	ORDER BY RANDOM()
+	LIMIT 12`;
+
+	db := GetDBContext()
+	
+	videos := new([]Video)
+	err := db.Select(videos, sql)
+	if err != nil {
+		panic(err)
+	}
+
+	db.Close()
+
+	return videos
+}
+
+
+func GetRecentlyWatchedVideos(userId int) *[]Video {
+	sql := `SELECT we.VideoId
+		FROM WatchEvent we
+		WHERE we.UserId=?
+		ORDER BY we.DateModified DESC
+		LIMIT 12`;
+
+	db := GetDBContext()
+	stmt, err := db.Preparex(sql)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	videos := new([]Video)
+	err = stmt.Select(videos, userId)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	return videos
+}
+
+
 func GetUnfinishedVideos(userId int) *[]Video {
 	db := GetDBContext()
 	sql := `SELECT v.VideoId

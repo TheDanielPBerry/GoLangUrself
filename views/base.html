@@ -2,20 +2,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>WestFlix</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>ClemFlix</title>
+
+	<link rel="stylesheet" href="/static/css/app.css" />
+
+	<script src="/static/js/base.js"></script>
 	<script src="https://unpkg.com/htmx.org@2.0.2"></script>
 </head>
 <body>
 	<header>
-		<h1>
+		<h1 id="title">
 			<a href="/">
-				WestFlix
+				ClemFlix
 			</a>
 		</h1>
 		<nav>
 			<ul>
-				<li>Categories</li>
-				<li>Popular</li>
 				<li>
 					{{ template "account" . }}
 				</li>

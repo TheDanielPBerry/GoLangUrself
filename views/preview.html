@@ -1,0 +1,16 @@
+{{ define "preview" }}
+	<h5>
+		{{ .Title.String }}
+		{{ .Year }}
+	</h5>
+	<p>
+		{{ .Description.String }}
+	</p>
+	<p>
+		{{ .MPARating.String }}
+		{{ .RuntimeDisplay.String }}
+	</p>
+	<a href="/v/{{ .VideoId }}" class="watch-video">
+		Play
+	</a>
+{{ end }}

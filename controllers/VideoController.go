@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"github.com/gorilla/mux"
 	"encoding/json"
+	"log"
+	"html/template"
 )
 
 
@@ -13,11 +15,44 @@ func ListVideos(resp http.ResponseWriter, req *http.Request) {
 	PopulateViewBag(req)
 
 	tmpl := getTemplate("index")
+	tmpl, err := tmpl.ParseFiles("views/row.html")
+	if err != nil {
+		log.Print(err)
+	}
 
-	viewBag["videos"] = models.GetVideos()
+	viewBag["mostPopular"] = models.GetMostPopularVideos()
+
+	session := models.GetSession(req)
+	userId, ok := session.Values["UserId"].(int)
+	if ok && userId > 0 {
+		viewBag["recentlyWatched"] = models.GetRecentlyWatchedVideos(userId)
+	}
 
 	tmpl.ExecuteTemplate(resp, "base", viewBag)
+}
 
+
+func GetVideoPreview(resp http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	vid := vars["videoId"]
+	
+	videoId, err := strconv.ParseInt(vid, 10, 64)
+	if err != nil {
+		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+	}
+
+	video, ok := models.GetVideo(int(videoId))
+	if !ok {
+		http.Error(resp, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+
+	tmpl, err := template.New("").ParseFiles("views/preview.html")
+	if err != nil {
+		log.Print(err)
+		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+	}
+
+	tmpl.ExecuteTemplate(resp, "preview", video)
 }
 
 

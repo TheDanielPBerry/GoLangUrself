@@ -1,0 +1,130 @@
+:root {
+	--primary-text-color: #efefef;
+	--secondary-text-color: #eee;
+	--primary-button-color: #111;
+}
+body {
+	background-color: #222;
+}
+a {
+	color: inherit;
+	text-decoration: none;
+}
+h1, h2, h3, h4, h5, h6 {
+	margin: 0px;
+}
+
+/* Common Used Components */
+.hide {
+	display: none !important;
+}
+.dropdown-menu {
+	list-style-type: none;
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+}
+.dropdown-menu a {
+	background-color: #aaad;
+	text-align: center;
+	display: block;
+	padding: 0.2em;
+	min-width: 150px;
+	width: 150px;
+	max-width: 150px;
+}
+.dropdown-menu a:hover {
+	opacity:0.8;
+}
+/* End Common Used Components */
+/* Header Section */
+header {
+	display: flex;
+	flex-direction: row;
+}
+header #title {
+	flex-grow: 2;
+	color: var(--primary-text-color);
+	text-decoration: none;
+}
+header nav {
+	flex-grow: 5;
+}
+header ul {
+	list-style-type: none;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	font-size: 1.4em;
+	color: var(--primary-text-color);
+}
+header ul li {
+	text-align: right;
+}
+header ul li:not(:first-child) {
+	margin-left: 2em;
+}
+header ul a {
+	color: var(--primary-text-color);
+	text-decoration: none;
+	cursor: pointer;
+}
+header ul a:hover {
+	color: #fff;
+	text-shadow: 1px 0px #000;
+}
+header #account-menu::after {
+	content: "▼";
+}
+
+@media only screen and (max-width: 672px) {
+	header ul {
+		flex-direction: column;
+	}
+}
+/* End Header Section */
+/* Row Section */
+.row-title {
+	color: #eee;
+	font-weight: bold;
+}
+.row {
+	display: flex;
+	flex-direction: row;
+	overflow-x: scroll;
+	overflow-y: visible;
+	scrollbar-width: thin;
+	scroll-snap-type: x mandatory;
+	scroll-snap-stop: normal;
+	scrollbar-color: #666 #2d2d2d;
+	width: 100%;
+}
+.thumbnail {
+	scroll-snap-align: start;
+	cursor: pointer;
+}
+.thumbnail img {
+	height: 18em;
+	border: 1px inset #ccc0;
+}
+.thumbnail img:hover, .thumbnail-focus img {
+	opacity: 0.7;
+	border: 1px inset #ccca;
+}
+.preview {
+	background-color: #888;
+}
+.preview .watch-video {
+	border-radius: 2px;
+	color: var(--secondary-text-color);
+	background-color: var(--primary-button-color);
+	font-size: 1.2em;
+	padding: 0.5rem 0.8rem;
+	cursor: pointer;
+}
+.preview .watch-video:hover {
+	opacity: 0.9;
+}
+/* End Row Section */
+
+
