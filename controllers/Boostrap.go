@@ -13,7 +13,7 @@ type ViewBag map[string]interface{}
 
 var viewBag ViewBag
 
-func PopulateViewBag(req *http.Request) {
+func PopulateViewBag(req *http.Request) ViewBag {
 	viewBag = make(ViewBag)
 
 	session := models.GetSession(req)
@@ -26,6 +26,7 @@ func PopulateViewBag(req *http.Request) {
 			viewBag["user"] = user
 		}
 	}
+	return viewBag
 }
 
 func getTemplate(view string) *template.Template {
