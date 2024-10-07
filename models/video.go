@@ -48,7 +48,7 @@ func GetMostPopularVideos() *[]Video {
 		LIMIT 40
 	)
 	ORDER BY RANDOM()
-	LIMIT 12`;
+	LIMIT 20`;
 
 	db := GetDBContext()
 	
@@ -69,7 +69,7 @@ func GetRecentlyWatchedVideos(userId int) *[]Video {
 		FROM WatchEvent we
 		WHERE we.UserId=?
 		ORDER BY we.DateModified DESC
-		LIMIT 12`;
+		LIMIT 10`;
 
 	db := GetDBContext()
 	stmt, err := db.Preparex(sql)

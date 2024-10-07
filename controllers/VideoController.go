@@ -12,21 +12,34 @@ import (
 
 
 func ListVideos(resp http.ResponseWriter, req *http.Request) {
-	PopulateViewBag(req)
-
 	tmpl := getTemplate("index")
 	tmpl, err := tmpl.ParseFiles("views/row.html")
 	if err != nil {
 		log.Print(err)
 	}
 
-	viewBag["mostPopular"] = models.GetMostPopularVideos()
-
+	mostPopular := models.GetMostPopularVideos()
+	var popularRightJoin []models.Video
+	
 	session := models.GetSession(req)
 	userId, ok := session.Values["UserId"].(int)
 	if ok && userId > 0 {
-		viewBag["recentlyWatched"] = models.GetRecentlyWatchedVideos(userId)
+		recentlyWatched := models.GetRecentlyWatchedVideos(userId)
+		for _, popular := range *mostPopular {
+			found := false
+			for _, recent := range *recentlyWatched {
+				if(popular.VideoId == recent.VideoId) {
+					found = true
+					break
+				}
+			}
+			if !found {
+				popularRightJoin = append(popularRightJoin, popular)
+			}
+		}
+		viewBag["recentlyWatched"] = recentlyWatched
 	}
+	viewBag["mostPopular"] = popularRightJoin
 
 	tmpl.ExecuteTemplate(resp, "base", viewBag)
 }
@@ -57,7 +70,6 @@ func GetVideoPreview(resp http.ResponseWriter, req *http.Request) {
 
 
 func ViewVideo(resp http.ResponseWriter, req *http.Request) {
-	PopulateViewBag(req)
 	vars := mux.Vars(req)
 	vid := vars["videoId"]
 	

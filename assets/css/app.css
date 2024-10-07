@@ -5,6 +5,7 @@
 }
 body {
 	background-color: #222;
+	font-family: sans-serif;
 }
 a {
 	color: inherit;
@@ -90,6 +91,7 @@ header #account-menu::after {
 }
 .row-container {
 	user-select: none;
+	margin-bottom: 0.5em;
 }
 .row {
 	display: flex;
