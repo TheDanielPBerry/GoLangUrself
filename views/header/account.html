@@ -2,16 +2,12 @@
 	<a id="account-menu">
 		{{ .user.FullName }}
 	</a>
-	<ul class="dropdown-menu hide">
-		<li>
-			<a href="/settings">
-				Settings
-			</a>
-		</li>
-		<li>
-			<a href="/logout">
-				Logout
-			</a>
-		</li>
-	</ul>
+	<div class="dropdown-menu hide">
+		<a href="/settings">
+			Settings
+		</a>
+		<a href="/logout">
+			Logout
+		</a>
+	</div>
 {{ end }}

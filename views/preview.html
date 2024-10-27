@@ -1,16 +1,24 @@
 {{ define "preview" }}
-	<h4>
-		{{ .Title.String }}
-		({{ .Year }})
-	</h4>
-	<p class="description">
-		{{ .Description.String }}
-	</p>
-	<p>
-		{{ .MPARating.String }}
-		{{ .RuntimeDisplay.String }}
-	</p>
-	<a href="/v/{{ .VideoId }}" class="watch-video">
-		Play
-	</a>
+	<div class="preview-container">
+		<div class="preview-row">
+			<h4>
+				{{ .Title.String }}
+				({{ .Year }})
+			</h4>
+			<span>
+				{{ .RuntimeDisplay.String }}
+			</span>
+			<span>
+				{{ .MPARating.String }}
+			</span>
+		</div>
+		<div class="preview-row">
+			<p class="description">
+				{{ .Description.String }}
+			</p>
+			<a href="/v/{{ .VideoId }}" class="watch-video">
+				Play
+			</a>
+		</div>
+	</div>
 {{ end }}

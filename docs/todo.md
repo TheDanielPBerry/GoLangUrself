@@ -2,29 +2,20 @@
 
 ## Todo
 ### Front-End
-- [ ] Wireframes
-- [ ] Prototypes
-- [ ] Video Player needs a pause/play button to stop the timer
 - [ ] Password Recovery Option (clemson email)
-- [x] Video List View
-- [x] Navbar
-- [x] Fancy video row scrolling
 - [ ] Settings Page
-- [ ] Account Dropdown
 
 #### Display Following Categories on Home Page in a Row:
 - [x] Most Popular
 - [x] Continue Watching
 - [ ] For You
 - [ ] Queue List
-- [ ] Format Preview Tray
-- [ ] Close Preview tray on click
-- [ ] Animate Preview Tray
+- [x] 4 different genres
 
 ### Backend
 - [ ] Todo Like/Dislike System
 - [ ] Add to Queue
-- [ ]
+
 ### Data Analysis
 - [x] Calculate Average Watch Time Percentage metrics for a video
 - [x] Calculate Total Watch Time for each video
@@ -35,6 +26,26 @@
 - [ ] 
 
 ## Done
+#### Week 4
+- [x] Mobile view for login page
+- [x] Styling for registration page
+- [x] Format Preview Tray
+- [x] Close Preview tray on click
+- [x] Animate Preview Tray
+- [x] Account Dropdown
+- [x] Video Player needs a pause/play button to stop the timer
+- [x] Search Controller
+- [x] Search Feature
+
+#### Week 3
+- [x] Wireframes
+- [x] Prototypes
+- [x] Video List View
+- [x] Navbar
+- [x] Fancy video row scrolling
+- [x] Fix width of preview description
+
+#### Week 1-2
 - [x] User sessions are bleeding into each other due to the constant shared context
 - [x] Video Player that tracks runtime and regularly updates the WatchEvent table
 - [x] Scrape Video Data from IMDB & Rotten Tomatoes (Description, Thumbnail, Runtime, MPA Rating)

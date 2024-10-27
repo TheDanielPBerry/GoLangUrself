@@ -21,5 +21,11 @@
 		</h3>
 		{{ template "row" .backlog }}
 	{{ end }}
+	{{ range $key, $list := .genres }}
+		<h3 class="row-title">
+			{{ $key }}
+		</h3>
+		{{ template "row" $list }}
+	{{ end }}
 	<script type="text/javascript" src="/static/js/index.js"></script>
 {{ end }}

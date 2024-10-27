@@ -1,13 +1,15 @@
 package controllers
 
 import (
-	"net/http"
-	"westflix/models"
-	"strconv"
-	"github.com/gorilla/mux"
+	//"database/sql"
 	"encoding/json"
-	"log"
 	"html/template"
+	"log"
+	"net/http"
+	"strconv"
+	"westflix/models"
+
+	"github.com/gorilla/mux"
 )
 
 
@@ -18,14 +20,14 @@ func ListVideos(resp http.ResponseWriter, req *http.Request) {
 		log.Print(err)
 	}
 
-	mostPopular := models.GetMostPopularVideos()
+	mostPopular := *models.GetMostPopularVideos()
 	var popularRightJoin []models.Video
 	
 	session := models.GetSession(req)
 	userId, ok := session.Values["UserId"].(int)
 	if ok && userId > 0 {
 		recentlyWatched := models.GetRecentlyWatchedVideos(userId)
-		for _, popular := range *mostPopular {
+		for _, popular := range mostPopular {
 			found := false
 			for _, recent := range *recentlyWatched {
 				if(popular.VideoId == recent.VideoId) {
@@ -38,8 +40,16 @@ func ListVideos(resp http.ResponseWriter, req *http.Request) {
 			}
 		}
 		viewBag["recentlyWatched"] = recentlyWatched
+		viewBag["mostPopular"] = popularRightJoin[:10]
+	} else {
+		viewBag["mostPopular"] = mostPopular[0:10]
 	}
-	viewBag["mostPopular"] = popularRightJoin
+	genres := models.GetRandomGenres()
+	genreCollections := map[string]*[]models.Video{}
+	for _, genre := range genres {
+		genreCollections[genre.Description] = models.GetGenreVideos(genre.GenreId)
+	}
+	viewBag["genres"] = genreCollections
 
 	tmpl.ExecuteTemplate(resp, "base", viewBag)
 }
@@ -150,4 +160,19 @@ func RecordWatchEvent(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	json.NewEncoder(resp).Encode(we)
+}
+
+func SearchVideos(resp http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+
+	query := vars["q"]
+	videos := models.SearchVideos(query)
+	if len(*videos) <= 0 {
+		json.NewEncoder(resp).Encode([]map[string]interface{}{{
+			"VideoId": "-1",
+			"Title": map[string]interface{}{"String": "No Results"},
+		}})
+		return
+	}
+	json.NewEncoder(resp).Encode(videos)
 }

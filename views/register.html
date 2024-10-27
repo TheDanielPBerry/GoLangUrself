@@ -1,4 +1,9 @@
 {{ define "content" }}
+<link rel="stylesheet" href="/static/css/login.css" />
+<hr />
+<h2 class="text-center form-title">
+	Create an account to start enjoying a selection of over 100+ films
+</h2>
 <form id="register_form" action="/register" method="POST">
 
 	{{ if .PostBack.error }}
@@ -7,40 +12,36 @@
 		</div>
 	{{ end }}
 
-	<div class="form-group">
-		<label for="fullname">Full Name:</label>
-		<input type="text"
-			name="fullname"
-			id="fullname"
-			value="{{.PostBack.fullname}}"
-			/>
-	</div>
-	<div class="form-group">
-		<label for="email">Email:</label>
-		<input type="email"
-			name="email"
-			id="email"
-			value="{{.PostBack.email}}"
-			/>
-	</div>
-	<div class="form-group">
-		<label for="password">Password:</label>
-		<input type="password"
-			name="password"
-			id="password"
-			/>
-	</div>
-	<div class="form-group">
-		<label for="password_confirmation">Confirm Password:</label>
-		<input type="password"
-			name="password_confirmation"
-			id="password_confirmation"
-			/>
-	</div>
+	<label for="fullname">Full Name:</label>
+	<input type="text"
+	name="fullname"
+	id="fullname"
+	value="{{.PostBack.fullname}}"
+	/>
+	<label for="email">Email:</label>
+	<input type="email"
+	name="email"
+	id="email"
+	value="{{.PostBack.email}}"
+	/>
+	<label for="password">Password:</label>
+	<input type="password"
+	name="password"
+	id="password"
+	/>
+	<label for="password_confirmation">Confirm Password:</label>
+	<input type="password"
+	name="password_confirmation"
+	id="password_confirmation"
+	/>
 
-	<button type="submit">
-		Register
-	</button>
-	<a href="/login">Login</a>
+	<div class="form-row">
+		<button type="submit" id="submit-button">
+			Register
+		</button>
+	</div>
+	<div class="form-row">
+		<a href="/login">Already have an account? Sign In</a>
+	</div>
 </form>
 {{ end }}

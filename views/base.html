@@ -6,23 +6,22 @@
 	<title>ClemFlix</title>
 
 	<link rel="stylesheet" href="/static/css/app.css" />
+	<link rel="stylesheet" href="/static/css/search.css" />
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	<script src="/static/js/base.js"></script>
+	<script src="/static/js/search.js"></script>
 </head>
 <body>
 	<header>
-		<h1 id="title">
-			<a href="/">
-				ClemFlix
-			</a>
-		</h1>
-		<nav>
-			<ul>
-				<li>
-					{{ template "account" . }}
-				</li>
-			</ul>
-		</nav>
+		<a href="/" id="title">
+			ClemFlix
+		</a>
+		<input type="text" id="search" placeholder="Search" autocomplete="off" autofocus />
+		<ul id="search-results" class="hide"></ul>
+		<div id="account-section">
+			{{ template "account" . }}
+		</div>
 	</header>
 	<section>
 		{{ template "content" . }}

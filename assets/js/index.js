@@ -38,18 +38,63 @@ window.addEventListener('load', () => {
 			if(!open) {
 				thumbnail.setAttribute('focus', 'focus');
 
-				let preview = target.closest('.row-container').querySelector('.preview');
+				let rowContainer = target.closest('.row-container');
+				let preview = rowContainer.querySelector('.preview');
 				//Fetch preview html
 				let videoId = thumbnail.getAttribute('data-video-id');
 				let url = `/v/${videoId}/preview`;
 				fetch(url, {
 					method: "GET",
 				}).then((resp) => resp.text())
-				.then((text) => preview.innerHTML=text);
+				.then((text) => {
+					preview.innerHTML=text;
+					rowContainer.previousElementSibling.scrollIntoView({behavior: 'smooth'});
+				});
 				preview.classList.remove('hide');
 			}
 		}
 
 
+	});
+	window.addEventListener('keydown', (e) => {
+		let focused = document.querySelectorAll('.thumbnail[focus=focus]');
+		if(focused.length > 0) {
+			focused = focused[0];
+			let row = focused.closest('.row');
+			let nextThumbnail = null;
+			let offset = 0;
+			if(e.key === 'ArrowRight') {
+				nextThumbnail = focused.nextElementSibling;
+				if(nextThumbnail !== null) {
+					offset = nextThumbnail.getBoundingClientRect().width - 10;
+				}
+			} else if(e.key === 'ArrowLeft') {
+				nextThumbnail = focused.previousElementSibling;
+				if(nextThumbnail !== null) {
+					offset = -nextThumbnail.getBoundingClientRect().width + 4;
+				}
+			}
+			if(nextThumbnail !== null) {
+				e.preventDefault();
+				nextThumbnail.click();
+				setTimeout(() => row.scrollBy({ left: offset, top: 0, behavior: 'smooth'}), 0);
+				return;
+			}
+
+			if(e.key === 'ArrowDown') {
+				nextThumbnail = focused.closest('.row-container').nextElementSibling?.nextElementSibling?.querySelector('.thumbnail');
+			} else if(e.key === 'ArrowUp') {
+				nextThumbnail = focused.closest('.row-container').previousElementSibling?.previousElementSibling?.querySelector('.thumbnail');
+			}
+			if(nextThumbnail !== undefined && nextThumbnail !== null) {
+				e.preventDefault();
+				nextThumbnail.click();
+				return;
+			}
+
+			if(e.key === 'Escape') {
+				focused.click();
+			}
+		}
 	});
 });

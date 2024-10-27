@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"westflix/controllers"
 	//"westflix/models"
-
 	"github.com/gorilla/mux"
 )
 type Middleware func(http.HandlerFunc) http.HandlerFunc
@@ -55,6 +54,7 @@ func main() {
 	r.HandleFunc("/login", PrepRoute(controllers.PostLogin)).Methods("POST")
 	r.HandleFunc("/logout", RequireAuth(controllers.PerformLogout)).Methods("GET")
 
+	r.HandleFunc("/search/{q}", PrepRoute(controllers.SearchVideos)).Methods("GET")
 
 	r.HandleFunc("/v/{videoId}/preview", controllers.GetVideoPreview).Methods("GET")
 	r.HandleFunc("/v/{videoId}/watch/{progress}", RequireAuth(controllers.RecordWatchEvent)).Methods("POST", "PUT")
@@ -68,5 +68,5 @@ func main() {
 
 	r.HandleFunc("/", PrepRoute(controllers.ListVideos)).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":80", r))
+	log.Fatal(http.ListenAndServe(":3000", r))
 }

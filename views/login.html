@@ -1,28 +1,34 @@
 {{ define "content" }}
+<link rel="stylesheet" href="/static/css/login.css" />
+<hr />
+<h2 class="text-center form-title">
+	Sign in to start enjoying a selection of over 100+ films
+</h2>
 <form id="login_form" action="/login" method="POST">
 	{{ if .error }}
 		<div class="error-container">
 			{{ .error }}
 		</div>
 	{{ end }}
-	<div class="form-group">
-		<label for="email">Email:</label>
-		<input type="email"
-			name="email"
-			id="email"
-			value="{{.email}}"
-			/>
+	<label for="email">Email:</label>
+	<input type="email"
+		name="email"
+		id="email"
+		value="{{.email}}"
+		autofocus
+		/>
+	<label for="password">Password:</label>
+	<input type="password"
+		name="password"
+		id="password"
+		/>
+	<div class="form-row">
+		<button id="submit-button" type="submit">
+			Login
+		</button>
 	</div>
-	<div class="form-group">
-		<label for="password">Password:</label>
-		<input type="password"
-			name="password"
-			id="password"
-			/>
+	<div class="form-row">
+		<a href="/register">Need an Account? Get Started</a>
 	</div>
-	<button type="submit">
-		Login
-	</button>
-	<a href="/register">Create Account</a>
 </form>
 {{ end }}

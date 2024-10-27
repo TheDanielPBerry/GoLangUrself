@@ -40,6 +40,44 @@ func GetVideos() []Video {
 }
 
 
+func SearchVideos(query string) *[]Video {
+	db := GetDBContext()
+	sql := `SELECT VideoId, Title, Year FROM (
+			SELECT *, 1 as priority
+			FROM Video
+			WHERE Title LIKE(?)
+		UNION ALL
+			SELECT *, 2 as priority
+			FROM Video
+			WHERE Title LIKE(?)
+		UNION ALL
+			SELECT *, 3 AS priority
+			FROM Video
+			WHERE Description LIKE(?)
+		)
+		GROUP BY VideoId
+		ORDER BY priority, Title
+		LIMIT 10
+	`;
+	stmt, err := db.Preparex(sql)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	videos := new([]Video)
+	queryLead := query + "%"
+	queryWildcard := "%" + query + "%"
+	err = stmt.Select(videos, queryLead, queryWildcard, queryWildcard)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	return videos
+}
+
+
 func GetMostPopularVideos() *[]Video {
 	sql := `SELECT * FROM (
 		SELECT awt.VideoId
@@ -88,6 +126,27 @@ func GetRecentlyWatchedVideos(userId int) *[]Video {
 	return videos
 }
 
+func GetGenreVideos(genreId int) *[]Video {
+	db := GetDBContext()
+	sql := `SELECT vg.VideoId AS VideoId
+		FROM VideoGenre vg
+		WHERE vg.GenreId=?
+		ORDER BY RANDOM()
+		LIMIT 20;`
+	stmt, err := db.Preparex(sql)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	videos := new([]Video)
+	err = stmt.Select(videos, genreId)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+	return videos
+}
 
 func GetUnfinishedVideos(userId int) *[]Video {
 	db := GetDBContext()
@@ -162,5 +221,6 @@ func GetVideo(id int) (*Video, bool) {
 
 	return video, true;
 }
+
 
 

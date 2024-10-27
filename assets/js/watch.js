@@ -66,12 +66,16 @@ window.addEventListener('load', () => {
 	
 	setInterval(() => {
 		if(!paused) {
-			timer++
-			ProgressTime.innerText = ConvertToReadableRuntime(timer);
-			ProgressSlider.value = timer;
-			if(timer >= 10 && timer % 10 == 0) {
-				//Only update every ten seconds
-				RecordWatchEvent();
+			if(timer < jsonData['video'].TotalRuntimeSeconds) {
+				timer++
+				ProgressTime.innerText = ConvertToReadableRuntime(timer);
+				ProgressSlider.value = timer;
+				if(timer >= 10 && timer % 10 == 0) {
+					//Only update every ten seconds
+					RecordWatchEvent();
+				}
+			} else {
+				paused = true;
 			}
 		}
 	}, 1000);
@@ -79,5 +83,27 @@ window.addEventListener('load', () => {
 	window.addEventListener('beforeunload', function (e) {
 		//Save the watch time when leaving the page
 		RecordWatchEvent();
+	});
+
+
+	const togglePause = () => {
+		paused = !paused;
+		document.getElementById('pause').children[0].innerText = paused ? 'play_arrow' : 'pause';
+	};
+	
+	document.getElementById('video').addEventListener('click', togglePause);
+	document.getElementById('pause').addEventListener('click', togglePause);
+
+	var mouseMoveTime = 0;
+	document.getElementById('video-player').addEventListener('mousemove', () => {
+		let videoControls = document.getElementById('video-controls');
+		videoControls.style.opacity = 1;
+		let myTime = Date.now();
+		mouseMoveTime = myTime;
+		setTimeout(() => {
+			if(mouseMoveTime == myTime && !paused) {
+				videoControls.style.opacity = 0;
+			}
+		}, 2000);
 	});
 });
