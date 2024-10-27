@@ -10,33 +10,35 @@ import (
 type Middleware func(http.HandlerFunc) http.HandlerFunc
 
 
+type RouteFunc func(resp http.ResponseWriter, req *http.Request, viewBag controllers.ViewBag)
 
-func PrepRoute(f http.HandlerFunc) http.HandlerFunc {
+
+func PrepRoute(f RouteFunc) http.HandlerFunc {
 	return func(resp http.ResponseWriter, req *http.Request) {
-		controllers.PopulateViewBag(req)
-		f(resp, req)
+		viewBag := controllers.PopulateViewBag(req)
+		f(resp, req, viewBag)
 	}
 }
 
-func NoAuthAllowed(f http.HandlerFunc) http.HandlerFunc {
+func NoAuthAllowed(f RouteFunc) http.HandlerFunc {
 	return func(resp http.ResponseWriter, req *http.Request) {
 		viewBag := controllers.PopulateViewBag(req)
 		if auth, ok := viewBag["authenticated"].(bool); ok && auth {
 			http.Redirect(resp, req, "/", http.StatusFound)
 		}
-		f(resp, req)
+		f(resp, req, viewBag)
 		return
 	}
 }
 
-func RequireAuth(f http.HandlerFunc) http.HandlerFunc {
+func RequireAuth(f RouteFunc) http.HandlerFunc {
 	return func(resp http.ResponseWriter, req *http.Request) {
 		viewBag := controllers.PopulateViewBag(req)
 		if auth, ok := viewBag["authenticated"].(bool); !ok || !auth {
 			http.Redirect(resp, req, "/login", http.StatusFound)
 			return
 		}
-		f(resp, req)
+		f(resp, req, viewBag)
 	}
 }
 
@@ -56,7 +58,7 @@ func main() {
 
 	r.HandleFunc("/search/{q}", PrepRoute(controllers.SearchVideos)).Methods("GET")
 
-	r.HandleFunc("/v/{videoId}/preview", controllers.GetVideoPreview).Methods("GET")
+	r.HandleFunc("/v/{videoId}/preview", PrepRoute(controllers.GetVideoPreview)).Methods("GET")
 	r.HandleFunc("/v/{videoId}/watch/{progress}", RequireAuth(controllers.RecordWatchEvent)).Methods("POST", "PUT")
 	r.HandleFunc("/v/{videoId}", RequireAuth(controllers.ViewVideo)).Methods("GET")
 

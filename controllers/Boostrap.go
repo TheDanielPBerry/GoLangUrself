@@ -11,9 +11,9 @@ import (
 
 type ViewBag map[string]interface{}
 
-var viewBag ViewBag
 
 func PopulateViewBag(req *http.Request) ViewBag {
+	var viewBag ViewBag
 	viewBag = make(ViewBag)
 
 	session := models.GetSession(req)
@@ -29,7 +29,7 @@ func PopulateViewBag(req *http.Request) ViewBag {
 	return viewBag
 }
 
-func getTemplate(view string) *template.Template {
+func (viewBag ViewBag) getTemplate(view string) *template.Template {
 	tmpl, err := template.New("").ParseFiles(fmt.Sprintf("views/%s.html", view), "views/base.html")
 	if(err != nil) {
 		panic(err)

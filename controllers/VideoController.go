@@ -13,8 +13,8 @@ import (
 )
 
 
-func ListVideos(resp http.ResponseWriter, req *http.Request) {
-	tmpl := getTemplate("index")
+func ListVideos(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
+	tmpl := viewBag.getTemplate("index")
 	tmpl, err := tmpl.ParseFiles("views/row.html")
 	if err != nil {
 		log.Print(err)
@@ -55,7 +55,7 @@ func ListVideos(resp http.ResponseWriter, req *http.Request) {
 }
 
 
-func GetVideoPreview(resp http.ResponseWriter, req *http.Request) {
+func GetVideoPreview(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
 	vars := mux.Vars(req)
 	vid := vars["videoId"]
 	
@@ -79,7 +79,7 @@ func GetVideoPreview(resp http.ResponseWriter, req *http.Request) {
 }
 
 
-func ViewVideo(resp http.ResponseWriter, req *http.Request) {
+func ViewVideo(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
 	vars := mux.Vars(req)
 	vid := vars["videoId"]
 	
@@ -113,12 +113,12 @@ func ViewVideo(resp http.ResponseWriter, req *http.Request) {
 	}
 	viewBag["jsonData"] = string(jsonData)
 
-	tmpl := getTemplate("watch")
+	tmpl := viewBag.getTemplate("watch")
 	tmpl.ExecuteTemplate(resp, "base", viewBag)
 }
 
 
-func RecordWatchEvent(resp http.ResponseWriter, req *http.Request) {
+func RecordWatchEvent(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
 	vars := mux.Vars(req)
 
 	vid := vars["videoId"]
@@ -162,7 +162,7 @@ func RecordWatchEvent(resp http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(resp).Encode(we)
 }
 
-func SearchVideos(resp http.ResponseWriter, req *http.Request) {
+func SearchVideos(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
 	vars := mux.Vars(req)
 
 	query := vars["q"]
