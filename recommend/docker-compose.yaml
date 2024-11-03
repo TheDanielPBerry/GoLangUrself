@@ -1,0 +1,9 @@
+version: "3.0"
+services:
+    pytorch:
+        container_name: pytorch
+        image: pytorch/pytorch
+        command: sleep infinity
+        volumes: 
+            - ./src:/workspace
+            - ../db:/workspace/db
