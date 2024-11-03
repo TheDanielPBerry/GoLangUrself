@@ -68,7 +68,7 @@ func PostLogin(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
 		return
 	}
 
-	performLogin(user.Id, resp, req)
+	performLogin(user.UserId, resp, req)
 
 	http.Redirect(resp, req, "/", http.StatusSeeOther)
 }

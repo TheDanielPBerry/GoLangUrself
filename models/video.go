@@ -2,8 +2,10 @@ package models
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"strings"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 
@@ -49,7 +51,7 @@ func SearchVideos(query string) *[]Video {
 		UNION ALL
 			SELECT *, 2 as priority
 			FROM Video
-			WHERE Title LIKE(?)
+			WHERE CONCAT(Title, Year) LIKE(?)
 		UNION ALL
 			SELECT *, 3 AS priority
 			FROM Video
@@ -66,9 +68,13 @@ func SearchVideos(query string) *[]Video {
 	}
 
 	videos := new([]Video)
+
+	query = strings.ReplaceAll(query, " ", "%");
 	queryLead := query + "%"
 	queryWildcard := "%" + query + "%"
+
 	err = stmt.Select(videos, queryLead, queryWildcard, queryWildcard)
+
 	if err != nil {
 		log.Print(err)
 		return nil

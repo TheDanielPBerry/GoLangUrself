@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	Id int `db:"Id"`
+	UserId int `db:"UserId"`
 	Email string `db:"Email"`
 	PasswordHash string `db:"PasswordHash"`
 	DateAdded string `db:"DateAdded"`
@@ -25,7 +25,7 @@ func HashPassword(password string) (string, error) {
 func GetUserByEmail(email string) (*User, error) {
 	db := GetDBContext()
 
-	query := `SELECT Id, Email, PasswordHash, FullName
+	query := `SELECT UserId, Email, PasswordHash, FullName
 		FROM User
 		WHERE Email=?`
 
@@ -52,9 +52,9 @@ func GetUserByEmail(email string) (*User, error) {
 func GetUserById(id int) (*User, bool) {
 	db := GetDBContext()
 
-	query := `SELECT Id, Email, PasswordHash, FullName
+	query := `SELECT UserId, Email, PasswordHash, FullName
 		FROM User
-		WHERE Id=?`
+		WHERE UserId=?`
 
 	stmt, err := db.Preparex(query)
 	if err != nil {
