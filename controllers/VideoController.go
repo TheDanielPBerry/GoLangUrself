@@ -3,6 +3,7 @@ package controllers
 import (
 	//"database/sql"
 	"encoding/json"
+	"html"
 	"html/template"
 	"log"
 	"net/http"
@@ -74,6 +75,8 @@ func GetVideoPreview(resp http.ResponseWriter, req *http.Request, viewBag ViewBa
 		log.Print(err)
 		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
+
+	video.Description.String = html.UnescapeString(video.Description.String)
 
 	tmpl.ExecuteTemplate(resp, "preview", video)
 }
