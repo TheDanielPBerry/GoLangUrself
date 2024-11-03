@@ -17,8 +17,8 @@
 		<a href="/" id="title">
 			ClemFlix
 		</a>
-		<input type="text" id="search" placeholder="Search" autocomplete="off" autofocus />
-		<ul id="search-results" class="hide"></ul>
+		<input type="text" id="search" placeholder="Search" autocomplete="off" autofocus role="searchbox" aria-controls="search-results" />
+		<ul id="search-results" class="hide" role="combobox"></ul>
 		<div id="account-section">
 			{{ template "account" . }}
 		</div>

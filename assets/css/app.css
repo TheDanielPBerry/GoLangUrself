@@ -167,7 +167,7 @@ header #account-menu::after {
 }
 .thumbnail[focus=focus] img {
 	opacity: 1;
-	border: 3px solid #66ac;
+	border: 3px solid #f6ad;
 	top: 3px;
 	left: -2px;
 	transform: scale(1.08);
