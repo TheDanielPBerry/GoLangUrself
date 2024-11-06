@@ -64,7 +64,7 @@ model = MatrixFactorization(num_users, num_movies, embedding_size)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters())
 
-for epoch in range(100):
+for epoch in range(300):
     for user_id, movie_id, rating in dataloader:
         optimizer.zero_grad()
         prediction = model(user_id.to(torch.int32), movie_id.to(torch.int32))

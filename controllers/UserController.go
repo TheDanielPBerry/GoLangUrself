@@ -12,26 +12,26 @@ import (
 
 
 
-func performLogin(id int, resp http.ResponseWriter, req *http.Request) {
+func performLogin(id int, resp Response, req *http.Request) {
 	session := models.GetSession(req)
 
 	session.Values["UserId"] = id
-	session.Save(req, resp)
+	session.Save(req, resp.w)
 }
 
-func failLogin(resp http.ResponseWriter, viewBag ViewBag) {
-	tmpl := viewBag.getTemplate("login")
-	tmpl.ExecuteTemplate(resp, "base", viewBag)
+func failLogin(resp Response) {
+	tmpl := resp.viewBag.getTemplate("login")
+	tmpl.ExecuteTemplate(resp.w, "base", resp.viewBag)
 }
 
-func failRegister(resp http.ResponseWriter, err error, email string, fullName string, viewBag ViewBag) {
-	tmpl := viewBag.getTemplate("register")
+func failRegister(resp Response, err error, email string, fullName string) {
+	tmpl := resp.viewBag.getTemplate("register")
 
-	viewBag["error"] = err.Error()
-	viewBag["email"] = email
-	viewBag["fullname"] = fullName
+	resp.viewBag["error"] = err.Error()
+	resp.viewBag["email"] = email
+	resp.viewBag["fullname"] = fullName
 
-	tmpl.ExecuteTemplate(resp, "base", viewBag)
+	tmpl.ExecuteTemplate(resp.w, "base", resp.viewBag)
 }
 
 
@@ -40,86 +40,86 @@ func failRegister(resp http.ResponseWriter, err error, email string, fullName st
 * Controller Actions *
 *********************/
 
-func GetLogin(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
-	tmpl := viewBag.getTemplate("login")
-	tmpl.ExecuteTemplate(resp, "base", viewBag)
+func GetLogin(resp Response, req *http.Request) {
+	tmpl := resp.viewBag.getTemplate("login")
+	tmpl.ExecuteTemplate(resp.w, "base", resp.viewBag)
 }
 
-func PostLogin(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
+func PostLogin(resp Response, req *http.Request) {
 	email := req.FormValue("email")
-	viewBag["email"] = email
+	resp.viewBag["email"] = email
 	if err := validate.Email(email); err != nil {
-		viewBag["error"] = "Invalid Credentials";
-		failLogin(resp, viewBag)
+		resp.viewBag["error"] = "Invalid Credentials";
+		failLogin(resp)
 		return
 	}
 
 	password := req.FormValue("password")
 	if err := validate.Password(password); err != nil {
-		viewBag["error"] = "Invalid Credentials";
-		failLogin(resp, viewBag)
+		resp.viewBag["error"] = "Invalid Credentials";
+		failLogin(resp)
 		return
 	}
 
 	user, err := models.AuthenticateLogin(email, password)
 	if err != nil {
-		viewBag["error"] = err.Error()
-		failLogin(resp, viewBag)
+		resp.viewBag["error"] = err.Error()
+		failLogin(resp)
 		return
 	}
 
 	performLogin(user.UserId, resp, req)
 
-	http.Redirect(resp, req, "/", http.StatusSeeOther)
+	http.Redirect(resp.w, req, "/", http.StatusSeeOther)
 }
 
 
 
 
-func GetRegister(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
-	tmpl := viewBag.getTemplate("register")
-	tmpl.ExecuteTemplate(resp, "base", nil)
+func GetRegister(resp Response, req *http.Request) {
+	tmpl := resp.viewBag.getTemplate("register")
+	tmpl.ExecuteTemplate(resp.w, "base", nil)
 }
 
 
-func PostRegister(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
+func PostRegister(resp Response, req *http.Request) {
 	email := req.FormValue("email")
 	fullName := req.FormValue("fullname")
 
 	if err := validate.Email(email); err != nil {
-		failRegister(resp, err, email, fullName, viewBag)
+		failRegister(resp, err, email, fullName)
 		return
 	}
 
 	password := req.FormValue("password")
 	if err := validate.Password(password); err != nil {
-		failRegister(resp, err, email, fullName, viewBag)
+		failRegister(resp, err, email, fullName)
 		return
 	}
 
 	if err:= validate.FullName(fullName); err != nil {
-		failRegister(resp, err, email, fullName, viewBag)
+		failRegister(resp, err, email, fullName)
 	}
 	user := models.User{FullName: fullName, Email: email, Password: password}
 	userId, err := models.CreateUser(user)
 	if err != nil {
-		failRegister(resp, err, email, fullName, viewBag)
+		failRegister(resp, err, email, fullName)
 		return
 	}
 	performLogin(userId, resp, req)
-	http.Redirect(resp, req, "/", http.StatusSeeOther)
+	http.Redirect(resp.w, req, "/", http.StatusSeeOther)
 
 	models.CloseDB()
 }
 
 
-func PerformLogout(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
-	if auth, ok := viewBag["authenticated"].(bool); auth && ok {
+func PerformLogout(resp Response, req *http.Request) {
+	if auth, ok := resp.viewBag["authenticated"].(bool); auth && ok {
 		session := models.GetSession(req)
 		delete(session.Values, "UserId")
-		session.Save(req, resp)
+		session.Save(req, resp.w)
 	}
-	http.Redirect(resp, req, "/", http.StatusSeeOther)
+	http.Redirect(resp.w, req, "/", http.StatusSeeOther)
 }
 
 

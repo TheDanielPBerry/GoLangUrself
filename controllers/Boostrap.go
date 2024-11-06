@@ -7,27 +7,46 @@ import (
 	"log"
 	"html/template"
 	"westflix/models"
+	"github.com/gorilla/sessions"
 )
 
 type ViewBag map[string]interface{}
 
+type Response struct {
+	w http.ResponseWriter
+	viewBag ViewBag
+	session *sessions.Session
+	user *models.User
+	Authenticated bool
+}
 
-func PopulateViewBag(req *http.Request) ViewBag {
-	var viewBag ViewBag
-	viewBag = make(ViewBag)
+func StartResponse(w http.ResponseWriter, req *http.Request) Response {
+	var resp Response
+	resp.w = w
+	resp.viewBag = make(ViewBag)
+	resp.session = models.GetSession(req)
 
-	session := models.GetSession(req)
-	userId, ok := session.Values["UserId"].(int)
-	viewBag["authenticated"] = false;
+	userId, ok := resp.session.Values["UserId"].(int)
+	resp.viewBag["authenticated"] = false;
+	resp.Authenticated = false
 	if ok {
-		viewBag["authenticated"] = userId > 0
+		resp.viewBag["authenticated"] = userId > 0
+		resp.Authenticated = userId > 0
 		user, ok := models.GetUserById(userId)
 		if ok {
-			viewBag["user"] = user
+			resp.user = user
+			frontFacingUser := models.User {
+				UserId: userId,
+				FullName: user.FullName,
+				DateAdded: user.DateAdded,
+				DateModified: user.DateModified,
+			}
+			resp.viewBag["user"] = frontFacingUser
 		}
 	}
-	return viewBag
+	return resp
 }
+
 
 func (viewBag ViewBag) getTemplate(view string) *template.Template {
 	tmpl, err := template.New("").ParseFiles(fmt.Sprintf("views/%s.html", view), "views/base.html")

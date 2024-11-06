@@ -10,35 +10,35 @@ import (
 type Middleware func(http.HandlerFunc) http.HandlerFunc
 
 
-type RouteFunc func(resp http.ResponseWriter, req *http.Request, viewBag controllers.ViewBag)
+type RouteFunc func(resp controllers.Response, req *http.Request)
 
 
 func PrepRoute(f RouteFunc) http.HandlerFunc {
-	return func(resp http.ResponseWriter, req *http.Request) {
-		viewBag := controllers.PopulateViewBag(req)
-		f(resp, req, viewBag)
+	return func(w http.ResponseWriter, r *http.Request) {
+		resp := controllers.StartResponse(w, r)
+		f(resp, r)
 	}
 }
 
 func NoAuthAllowed(f RouteFunc) http.HandlerFunc {
-	return func(resp http.ResponseWriter, req *http.Request) {
-		viewBag := controllers.PopulateViewBag(req)
-		if auth, ok := viewBag["authenticated"].(bool); ok && auth {
-			http.Redirect(resp, req, "/", http.StatusFound)
+	return func(w http.ResponseWriter, r *http.Request) {
+		resp := controllers.StartResponse(w, r)
+		if resp.Authenticated {
+			http.Redirect(w, r, "/", http.StatusFound)
 		}
-		f(resp, req, viewBag)
+		f(resp, r)
 		return
 	}
 }
 
 func RequireAuth(f RouteFunc) http.HandlerFunc {
-	return func(resp http.ResponseWriter, req *http.Request) {
-		viewBag := controllers.PopulateViewBag(req)
-		if auth, ok := viewBag["authenticated"].(bool); !ok || !auth {
-			http.Redirect(resp, req, "/login", http.StatusFound)
+	return func(w http.ResponseWriter, r *http.Request) {
+		resp := controllers.StartResponse(w, r)
+		if !resp.Authenticated {
+			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
-		f(resp, req, viewBag)
+		f(resp, r)
 	}
 }
 
@@ -60,6 +60,7 @@ func main() {
 
 	r.HandleFunc("/v/{videoId}/preview", PrepRoute(controllers.GetVideoPreview)).Methods("GET")
 	r.HandleFunc("/v/{videoId}/watch/{progress}", RequireAuth(controllers.RecordWatchEvent)).Methods("POST", "PUT")
+	r.HandleFunc("/v/{videoId}/rate/{rating}", RequireAuth(controllers.RecordRating)).Methods("POST", "PUT")
 	r.HandleFunc("/v/{videoId}", RequireAuth(controllers.ViewVideo)).Methods("GET")
 
 	fs := http.FileServer(http.Dir("assets/"))

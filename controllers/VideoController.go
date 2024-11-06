@@ -14,8 +14,8 @@ import (
 )
 
 
-func ListVideos(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
-	tmpl := viewBag.getTemplate("index")
+func ListVideos(resp Response, req *http.Request) {
+	tmpl := resp.viewBag.getTemplate("index")
 	tmpl, err := tmpl.ParseFiles("views/row.html")
 	if err != nil {
 		log.Print(err)
@@ -40,94 +40,99 @@ func ListVideos(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
 				popularRightJoin = append(popularRightJoin, popular)
 			}
 		}
-		viewBag["recentlyWatched"] = recentlyWatched
-		viewBag["mostPopular"] = popularRightJoin[:10]
+		resp.viewBag["recentlyWatched"] = recentlyWatched
+		resp.viewBag["mostPopular"] = popularRightJoin[:10]
 	} else {
-		viewBag["mostPopular"] = mostPopular[0:10]
+		resp.viewBag["mostPopular"] = mostPopular[0:10]
 	}
 	genres := models.GetRandomGenres()
 	genreCollections := map[string]*[]models.Video{}
 	for _, genre := range genres {
 		genreCollections[genre.Description] = models.GetGenreVideos(genre.GenreId)
 	}
-	viewBag["genres"] = genreCollections
+	resp.viewBag["genres"] = genreCollections
 
-	tmpl.ExecuteTemplate(resp, "base", viewBag)
+	log.Println(resp.viewBag)
+	tmpl.ExecuteTemplate(resp.w, "base", resp.viewBag)
 }
 
 
-func GetVideoPreview(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
+func GetVideoPreview(resp Response, req *http.Request) {
 	vars := mux.Vars(req)
 	vid := vars["videoId"]
 	
 	videoId, err := strconv.ParseInt(vid, 10, 64)
 	if err != nil {
-		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 
 	video, ok := models.GetVideo(int(videoId))
 	if !ok {
-		http.Error(resp, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		http.Error(resp.w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 
 	tmpl, err := template.New("").ParseFiles("views/preview.html")
 	if err != nil {
 		log.Print(err)
-		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 
 	video.Description.String = html.UnescapeString(video.Description.String)
 
-	tmpl.ExecuteTemplate(resp, "preview", video)
+	tmpl.ExecuteTemplate(resp.w, "preview", video)
 }
 
 
-func ViewVideo(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
+func ViewVideo(resp Response, req *http.Request) {
 	vars := mux.Vars(req)
 	vid := vars["videoId"]
 	
 	videoId, err := strconv.ParseInt(vid, 10, 64)
 	if err != nil {
-		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 
 	video, ok := models.GetVideo(int(videoId))
 	if !ok {
-		http.Error(resp, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		http.Error(resp.w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 
-	viewBag["video"] = video
+	resp.viewBag["video"] = video
 
 
 	session := models.GetSession(req)
 	userId, ok := session.Values["UserId"].(int)
 	if !ok || userId <= 0 {
 		//Is not properly authenticated
-		http.Redirect(resp, req, "/login", http.StatusSeeOther)
+		http.Redirect(resp.w, req, "/login", http.StatusSeeOther)
 		return
 	}
 
 	watchEvent, ok := models.GetWatchEvent(userId, int(videoId))
-	viewBag["watchEvent"] = watchEvent
+	resp.viewBag["watchEvent"] = watchEvent
 
-	jsonData, err := json.Marshal(viewBag)
+	jsonData, err := json.Marshal(resp.viewBag)
 	if err != nil {
-		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
-	viewBag["jsonData"] = string(jsonData)
+	resp.viewBag["jsonData"] = string(jsonData)
 
-	tmpl := viewBag.getTemplate("watch")
-	tmpl.ExecuteTemplate(resp, "base", viewBag)
+	tmpl := resp.viewBag.getTemplate("watch")
+	tmpl, err = tmpl.ParseFiles("views/rating.html")
+	if err != nil {
+		log.Print(err)
+	}
+	tmpl.ExecuteTemplate(resp.w, "base", resp.viewBag)
 }
 
 
-func RecordWatchEvent(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
+func RecordWatchEvent(resp Response, req *http.Request) {
 	vars := mux.Vars(req)
 
 	vid := vars["videoId"]
 	videoId, err := strconv.ParseInt(vid, 10, 64)
 	if err != nil || videoId < 0 || videoId > 101 {
-		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
@@ -135,7 +140,7 @@ func RecordWatchEvent(resp http.ResponseWriter, req *http.Request, viewBag ViewB
 	userId, ok := session.Values["UserId"].(int)
 	if !ok || userId <= 0 {
 		//Is not properly authenticated
-		json.NewEncoder(resp).Encode(map[string]interface{} {
+		json.NewEncoder(resp.w).Encode(map[string]interface{} {
 			"error": "Invalid User",
 			"errorCode": 403,
 		})
@@ -145,7 +150,7 @@ func RecordWatchEvent(resp http.ResponseWriter, req *http.Request, viewBag ViewB
 	prog := vars["progress"]
 	progress, err := strconv.ParseInt(prog, 10, 64)
 	if err != nil {
-		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	
@@ -159,23 +164,67 @@ func RecordWatchEvent(resp http.ResponseWriter, req *http.Request, viewBag ViewB
 	watchEvent.ProgressSeconds = int(progress)
 	we, ok := models.UpdateWatchEvent(watchEvent)
 	if !ok || we == nil {
-		http.Error(resp, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 
-	json.NewEncoder(resp).Encode(we)
+	json.NewEncoder(resp.w).Encode(we)
 }
 
-func SearchVideos(resp http.ResponseWriter, req *http.Request, viewBag ViewBag) {
+func SearchVideos(resp Response, req *http.Request) {
 	vars := mux.Vars(req)
 
 	query := vars["q"]
 	videos := models.SearchVideos(query)
 	if len(*videos) <= 0 {
-		json.NewEncoder(resp).Encode([]map[string]interface{}{{
+		json.NewEncoder(resp.w).Encode([]map[string]interface{}{{
 			"VideoId": "-1",
 			"Title": map[string]interface{}{"String": "No Results"},
 		}})
 		return
 	}
-	json.NewEncoder(resp).Encode(videos)
+	json.NewEncoder(resp.w).Encode(videos)
+}
+
+func RecordRating(resp Response, req *http.Request) {
+	vars := mux.Vars(req)
+
+	vid := vars["videoId"]
+	videoId, err := strconv.ParseInt(vid, 10, 64)
+	if err != nil || videoId < 0 || videoId > 101 {
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	session := models.GetSession(req)
+	userId, ok := session.Values["UserId"].(int)
+	if !ok || userId <= 0 {
+		//Is not properly authenticated
+		json.NewEncoder(resp.w).Encode(map[string]interface{} {
+			"error": "Invalid User",
+			"errorCode": 403,
+		})
+		return
+	}
+
+	ratingInput := vars["rating"]
+	ratingValue, err := strconv.ParseInt(ratingInput, 10, 64)
+	if err != nil {
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+	
+	rating, ok := models.GetRating(int(userId), int(videoId))
+	if !ok || rating == nil {
+		rating = new(models.Rating)
+		rating.Value = 0
+		rating.UserId = int(userId)
+		rating.VideoId = int(videoId)
+	}
+	rating.Value = int(ratingValue)
+	we, ok := models.UpdateRating(rating)
+	if !ok || we == nil {
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+	}
+
+	json.NewEncoder(resp.w).Encode(we)
 }
