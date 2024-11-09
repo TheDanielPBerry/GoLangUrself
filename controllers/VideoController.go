@@ -52,7 +52,6 @@ func ListVideos(resp Response, req *http.Request) {
 	}
 	resp.viewBag["genres"] = genreCollections
 
-	log.Println(resp.viewBag)
 	tmpl.ExecuteTemplate(resp.w, "base", resp.viewBag)
 }
 
