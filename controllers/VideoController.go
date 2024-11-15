@@ -40,8 +40,11 @@ func ListVideos(resp Response, req *http.Request) {
 				popularRightJoin = append(popularRightJoin, popular)
 			}
 		}
-		resp.viewBag["recentlyWatched"] = recentlyWatched
 		resp.viewBag["mostPopular"] = popularRightJoin[:10]
+
+		if len(*recentlyWatched) > 0 {
+			resp.viewBag["recentlyWatched"] = recentlyWatched
+		}
 	} else {
 		resp.viewBag["mostPopular"] = mostPopular[0:10]
 	}
@@ -109,6 +112,9 @@ func ViewVideo(resp Response, req *http.Request) {
 
 	watchEvent, ok := models.GetWatchEvent(userId, int(videoId))
 	resp.viewBag["watchEvent"] = watchEvent
+
+	rating, ok := models.GetRating(userId, int(videoId));
+	resp.viewBag["rating"] = rating;
 
 	jsonData, err := json.Marshal(resp.viewBag)
 	if err != nil {

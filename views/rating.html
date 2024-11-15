@@ -1,7 +1,17 @@
 {{ define "rating" }}
 <div class="rating">
-	<a data-rating="1">👍</a>
-	<a data-rating="-1">👎</a>
+	{{ if gt .Value 0 }}
+		<a data-rating="1" class="material-icons" active="true">thumb_up</a>
+	{{ else }}
+		<a data-rating="1" class="material-icons">thumb_up</a>
+	{{ end }}
+
+	{{ if lt .Value 0 }}
+		<a data-rating="-1" class="material-icons" active="true">thumb_down</a>
+	{{ else }}
+		<a data-rating="-1" class="material-icons">thumb_down</a>
+	{{ end }}
 </div>
+
 <script src="/static/js/rating.js"></script>
 {{ end }}

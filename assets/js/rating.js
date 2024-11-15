@@ -37,6 +37,8 @@ window.addEventListener('load', () => {
 
 	document.querySelectorAll('[data-rating]').forEach((button) => button.addEventListener('click', (e) => {
 		let target = e.target;
+		target.parentElement.querySelectorAll('[active=true]').forEach((btn) => btn.removeAttribute('active'));
 		RecordRating(target.attributes['data-rating'].value);
+		target.setAttribute('active', true);
 	}));
 });

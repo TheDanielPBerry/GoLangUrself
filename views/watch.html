@@ -1,4 +1,7 @@
 {{ define "content" }}
+<h5 class="movie-title">
+	{{.video.Title.Value}}
+</h5>
 <div class="text-center" id="video-player">
 	<img src="/static/videos/{{.video.VideoId}}.webp" id="video" />
 	<div id="video-controls">
@@ -6,16 +9,18 @@
 		<span id="progress">0:00:00</span>
 		/
 		<span id="TotalRuntime">{{ .video.TotalRuntimeSeconds }}</span>
-
 		<input type="range" id="progress-slider" min="0" max="{{.video.TotalRuntimeSeconds}}" value="0" style="width: 80%;" />
 	</div>
 </div>
 <script type="text/javascript">
 	var jsonData = JSON.parse({{ .jsonData }});
 </script>
+
+<div class="text-end">
+	{{ template "rating" .rating }}
+</div>
+
 <script src="/static/js/watch.js"></script>
 <link rel="stylesheet" href="/static/css/watch.css" />
-
-{{ template "rating" }}
 
 {{ end }}
