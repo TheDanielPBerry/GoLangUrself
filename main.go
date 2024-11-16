@@ -55,10 +55,12 @@ func main() {
 	r.HandleFunc("/login", PrepRoute(controllers.GetLogin)).Methods("GET")
 	r.HandleFunc("/login", PrepRoute(controllers.PostLogin)).Methods("POST")
 	r.HandleFunc("/logout", RequireAuth(controllers.PerformLogout)).Methods("GET")
+	r.HandleFunc("/settings", RequireAuth(controllers.GetSettings)).Methods("GET")
 
 	r.HandleFunc("/search/{q}", PrepRoute(controllers.SearchVideos)).Methods("GET")
 
 	r.HandleFunc("/v/{videoId}/preview", PrepRoute(controllers.GetVideoPreview)).Methods("GET")
+	r.HandleFunc("/v/{videoId}/queue", PrepRoute(controllers.QueueVideo)).Methods("POST")
 	r.HandleFunc("/v/{videoId}/watch/{progress}", RequireAuth(controllers.RecordWatchEvent)).Methods("POST", "PUT")
 	r.HandleFunc("/v/{videoId}/rate/{rating}", RequireAuth(controllers.RecordRating)).Methods("POST", "PUT")
 	r.HandleFunc("/v/{videoId}", RequireAuth(controllers.ViewVideo)).Methods("GET")
