@@ -23,6 +23,9 @@ h1, h2, h3, h4, h5, h6 {
 .text-center {
 	text-align: center;
 }
+.text-end {
+	text-align: right;
+}
 /* Dropdown Menu */
 .dropdown-menu {
 	display: flex;
@@ -186,7 +189,6 @@ header #account-menu::after {
 	text-shadow: 2px 2px 5px #fffd;
 	border-bottom: 2px inset black;
 	transition: max-height 0.2s;
-	max-height: 100%;
 }
 .preview.hide {
 	display: block !important;
@@ -199,10 +201,27 @@ header #account-menu::after {
 	padding: 1em;
 	gap: 4em;
 }
+.preview-actions {
+	display: inline-flex;
+	gap: 1em;
+	flex-direction: column;
+}
+.preview-row h4 {
+	font-size: 1.2em;
+}
 .preview-row h4, .preview-row p {
 	margin: 0px;
 }
 .preview .watch-video {
+	margin-bottom: 1em;
+}
+
+.preview .queue-video[active=true] {
+	background-color: #999;
+	border: 1px solid #222;
+	color: #222;
+}
+.preview-actions a {
 	border-radius: 2px;
 	color: var(--secondary-text-color);
 	background-color: var(--primary-button-color);
@@ -212,20 +231,21 @@ header #account-menu::after {
 	text-shadow: none;
 	max-height: fit-content;
 	text-align: center;
+	transition: background-color 1s;
 }
-.preview .watch-video:hover {
+.preview-actions a:hover {
 	opacity: 0.8;
 }
 .preview .description {
 	background-color: #eee;
-	max-height: 70px;
+	max-height: 100px;
 	overflow-y: auto;
 	border: 1px solid #ddd;
 	padding: 0.2em;
 	line-height: 1.1;
 	scrollbar-width: thin;
 	border-radius: 4px;
-	flex: 70%;
+	flex: 65%;
 }
 @media only screen and (max-width: 762px) {
 	.preview-row {
@@ -238,10 +258,13 @@ header #account-menu::after {
 		max-height: 120px;
 	}
 	.preview .watch-video {
-		margin-bottom: 1em;
 	}
 }
 /* End preview section */
 /* End Row Section */
 
-
+#scrub-notification {
+	color: white;
+	text-align: center;
+	font-size: 1.3em;
+}

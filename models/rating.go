@@ -31,8 +31,11 @@ func GetRating(userId int, videoId int) (*Rating, bool) {
 	var rating *Rating = new(Rating)
 	err = stmt.Get(rating, userId, videoId)
 	if err != nil {
-		log.Print(err)
-		return nil, false
+		emptyRating := new(Rating)
+		emptyRating.Value = 0
+		emptyRating.UserId = userId
+		emptyRating.VideoId = videoId
+		return emptyRating, false
 	}
 
 	return rating, true

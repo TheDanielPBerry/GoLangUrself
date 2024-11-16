@@ -78,8 +78,17 @@ func GetVideoPreview(resp Response, req *http.Request) {
 		log.Print(err)
 		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
-
 	video.Description.String = html.UnescapeString(video.Description.String)
+	video.Queued = false
+
+	session := models.GetSession(req)
+	userId, ok := session.Values["UserId"].(int)
+	if ok && userId > 0 {
+		queueEvent, ok := models.GetWatchQueue(userId, int(videoId))
+		if ok && queueEvent != nil {
+			video.Queued = true
+		}
+	}
 
 	tmpl.ExecuteTemplate(resp.w, "preview", video)
 }
@@ -231,5 +240,51 @@ func RecordRating(resp Response, req *http.Request) {
 		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 
+	json.NewEncoder(resp.w).Encode(we)
+}
+
+
+func QueueVideo(resp Response, req *http.Request) {
+	vars := mux.Vars(req)
+
+	vid := vars["videoId"]
+	videoId, err := strconv.ParseInt(vid, 10, 64)
+	if err != nil || videoId < 0 || videoId > 101 {
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	session := models.GetSession(req)
+	userId, ok := session.Values["UserId"].(int)
+	if !ok || userId <= 0 {
+		//Is not properly authenticated
+		json.NewEncoder(resp.w).Encode(map[string]interface{} {
+			"error": "Invalid User",
+			"errorCode": 403,
+		})
+		return
+	}
+
+	newQueueEvent := false
+	queueEvent, ok := models.GetWatchQueue(int(userId), int(videoId))
+	if !ok || queueEvent == nil {
+		queueEvent = new(models.WatchQueue)
+		queueEvent.WatchQueueId = 0
+		queueEvent.UserId = int(userId)
+		queueEvent.VideoId = int(videoId)
+		newQueueEvent = true;
+
+	}
+	we, ok := models.UpdateWatchQueue(queueEvent)
+
+	if !ok || we == nil {
+		http.Error(resp.w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+	}
+
+	if(newQueueEvent) {
+		resp.w.WriteHeader(http.StatusCreated)
+	} else {
+		resp.w.WriteHeader(http.StatusNoContent)
+	}
 	json.NewEncoder(resp.w).Encode(we)
 }

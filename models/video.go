@@ -18,6 +18,7 @@ type Video struct {
 	RuntimeDisplay sql.NullString `db:"RuntimeDisplay"`
 	MPARating sql.NullString `db:"MPARating"`
 	TotalRuntimeSeconds int `db:"TotalRuntimeSeconds"`
+	Queued bool
 }
 
 
@@ -63,7 +64,6 @@ func SearchVideos(query string) *[]Video {
 	`;
 	stmt, err := db.Preparex(sql)
 	if err != nil {
-		log.Print(err)
 		return nil
 	}
 
@@ -76,7 +76,6 @@ func SearchVideos(query string) *[]Video {
 	err = stmt.Select(videos, queryLead, queryWildcard, queryWildcard)
 
 	if err != nil {
-		log.Print(err)
 		return nil
 	}
 
@@ -125,7 +124,6 @@ func GetRecentlyWatchedVideos(userId int) *[]Video {
 	videos := new([]Video)
 	err = stmt.Select(videos, userId)
 	if err != nil {
-		log.Print(err)
 		return nil
 	}
 
@@ -148,7 +146,6 @@ func GetGenreVideos(genreId int) *[]Video {
 	videos := new([]Video)
 	err = stmt.Select(videos, genreId)
 	if err != nil {
-		log.Print(err)
 		return nil
 	}
 	return videos
@@ -171,7 +168,6 @@ func GetUnfinishedVideos(userId int) *[]Video {
 	videos := new([]Video)
 	err = stmt.Get(videos, userId)
 	if err != nil {
-		log.Print(err)
 		return nil
 	}
 
@@ -189,14 +185,12 @@ func GetUserFavorites(userId int) *[]Video {
 		LIMIT 20;`
 	stmt, err := db.Preparex(sql)
 	if err != nil {
-		log.Print(err)
 		return nil
 	}
 
 	videos := new([]Video)
 	err = stmt.Get(videos, userId)
 	if err != nil {
-		log.Print(err)
 		return nil
 	}
 
@@ -214,14 +208,12 @@ func GetVideo(id int) (*Video, bool) {
 
 	stmt, err := db.Preparex(sql)
 	if err != nil {
-		log.Print(err)
 		return nil, false
 	}
 
 	var video *Video = new(Video)
 	err = stmt.Get(video, id)
 	if err != nil {
-		log.Print(err)
 		return nil, false
 	}
 

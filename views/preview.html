@@ -16,9 +16,20 @@
 			<p class="description">
 				{{ .Description.String }}
 			</p>
-			<a href="/v/{{ .VideoId }}" class="watch-video">
-				Play
-			</a>
+			<div class="preview-actions">
+				<a data-video-id="{{ .VideoId }}" class="queue-video" 
+				{{ if .Queued }}
+					active = "true">
+					✓ Added to Queue
+				{{ else }}
+					>
+					Watch Later
+				{{ end }}
+				</a>
+				<a href="/v/{{ .VideoId }}" class="watch-video">
+					Play
+				</a>
+			</div>
 		</div>
 	</div>
 {{ end }}
