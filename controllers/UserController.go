@@ -75,7 +75,6 @@ func PostLogin(resp Response, req *http.Request) {
 
 
 
-
 func GetRegister(resp Response, req *http.Request) {
 	tmpl := resp.viewBag.getTemplate("register")
 	tmpl.ExecuteTemplate(resp.w, "base", nil)
@@ -122,4 +121,7 @@ func PerformLogout(resp Response, req *http.Request) {
 	http.Redirect(resp.w, req, "/", http.StatusSeeOther)
 }
 
-
+func GetSettings(resp Response, req *http.Request) {
+	tmpl := resp.viewBag.getTemplate("settings")
+	tmpl.ExecuteTemplate(resp.w, "base", nil)
+}

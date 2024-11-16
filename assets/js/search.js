@@ -21,7 +21,7 @@ window.addEventListener('load', () => {
 	};
 
 	const UpdateSearchResults = (results) => {
-		resultList.style.top = (search.offsetHeight + 14) + 'px';
+		resultList.style.top = (search.offsetTop + 20) + 'px';
 		resultList.style.left = (search.offsetLeft + 1) + 'px';
 
 		resultList.classList.remove('hide');
