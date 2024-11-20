@@ -70,6 +70,7 @@ func main() {
 	r.Handle("/static/css/{$}", http.StripPrefix("/static/", fs)).Methods("GET")
 	r.Handle("/static/thumbnails/{$}", http.StripPrefix("/static/", fs)).Methods("GET")
 	r.Handle("/static/videos/{$}", http.StripPrefix("/static/", fs)).Methods("GET")
+	r.Handle("/static/img/{$}", http.StripPrefix("/static/", fs)).Methods("GET")
 
 	r.HandleFunc("/", PrepRoute(controllers.ListVideos)).Methods("GET")
 
