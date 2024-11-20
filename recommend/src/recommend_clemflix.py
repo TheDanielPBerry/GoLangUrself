@@ -64,7 +64,7 @@ model = MatrixFactorization(num_users, num_movies, embedding_size)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters())
 
-for epoch in range(500):
+for epoch in range(300):
     for user_id, movie_id, rating in dataloader:
         optimizer.zero_grad()
         prediction = model(user_id.to(torch.int32), movie_id.to(torch.int32))
@@ -79,24 +79,6 @@ def get_recommendations(model, user_id, top_k=18):
     user_emb = model.user_embeddings(torch.tensor(user_id))
     movie_embs = model.movie_embeddings.weight
     scores = torch.matmul(user_emb, movie_embs.t())
-    print("Rear Window")
-    print(scores[53])
-    print("Cinema Paradiso")
-    print(scores[54])
-    print("Modern Times")
-    print(scores[56])
-    print("Witness for the Prosecution")
-    print(scores[79])
-
-    print("++++++++++")
-    print("The Dark Knight")
-    print(scores[3])
-    print("Avengers: Endgame")
-    print(scores[60])
-    print("Avengers: Infinity War")
-    print(scores[64])
-    print("Spider-Man: Into the Spider-Verse")
-    print(scores[69])
     _, top_movie_indices = torch.topk(scores, top_k)
     return top_movie_indices
 # endDef
@@ -106,9 +88,21 @@ cur = db.cursor()
 res = cur.execute("SELECT * FROM User")
 users = res.fetchall()
 
-print(get_recommendations(model, 36))
-print("==================================================\n\n")
-recommendations = get_recommendations(model, 37)
-print(recommendations)
-recommendations = get_recommendations(model, 46)
-print(recommendations)
+for u in users:
+    userId = u[0]
+    sql = f"DELETE FROM Recommendation WHERE UserId={userId}"
+    cur.execute(sql)
+
+    recommendations = get_recommendations(model, u[0])
+    sql = "INSERT INTO Recommendation (UserId, VideoId, DateModified) VALUES "
+    inserts = []
+    for rec in recommendations:
+        videoId = rec
+        inserts.append(f"({userId}, {videoId}, datetime())")
+    # endFor
+    sql += ",\n".join(inserts)
+    # print(sql)
+    cur.execute(sql)
+# endFor
+
+db.commit()
