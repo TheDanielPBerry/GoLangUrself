@@ -44,10 +44,17 @@ func ListVideos(resp Response, req *http.Request) {
 
 		if len(*recentlyWatched) > 0 {
 			resp.viewBag["recentlyWatched"] = recentlyWatched
+
+			recommendations := models.GetRecommendations(userId)
+			if len(*recommendations) > 0 {
+				resp.viewBag["forYou"] = recommendations
+			}
 		}
 	} else {
 		resp.viewBag["mostPopular"] = mostPopular[0:10]
 	}
+
+
 	genres := models.GetRandomGenres()
 	genreCollections := map[string]*[]models.Video{}
 	for _, genre := range genres {

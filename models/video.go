@@ -112,7 +112,7 @@ func GetRecentlyWatchedVideos(userId int) *[]Video {
 		FROM WatchEvent we
 		WHERE we.UserId=?
 		ORDER BY we.DateModified DESC
-		LIMIT 10`;
+		LIMIT 10`
 
 	db := GetDBContext()
 	stmt, err := db.Preparex(sql)
@@ -128,6 +128,30 @@ func GetRecentlyWatchedVideos(userId int) *[]Video {
 	}
 
 	return videos
+}
+
+func GetRecommendations(userId int) *[]Video {
+	db := GetDBContext()
+
+	sql := `SELECT VideoId 
+		FROM Recommendation
+		WHERE UserId=?
+		ORDER BY RANDOM()
+		LIMIT 20`
+
+	stmt, err := db.Preparex(sql)
+	if err != nil {
+		log.Fatal(err)
+		return nil
+	}
+
+	recs := new([]Video)
+	err = stmt.Select(recs, userId)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return recs
 }
 
 func GetGenreVideos(genreId int) *[]Video {
