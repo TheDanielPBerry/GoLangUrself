@@ -1,5 +1,7 @@
+westflix
 *.db
 db/*
 recommend/src/.venv
 main
 config.ini
+certs/*

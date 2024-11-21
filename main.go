@@ -74,5 +74,5 @@ func main() {
 
 	r.HandleFunc("/", PrepRoute(controllers.ListVideos)).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":3000", r))
+	log.Fatal(http.ListenAndServeTLS(":443", "certs/cert1.pem", "certs/privkey1.pem", r))
 }
