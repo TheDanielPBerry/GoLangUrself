@@ -14,7 +14,7 @@ func GetRandomGenres() []Genre {
 	sql := `SELECT * 
 		FROM Genre
 		ORDER BY RANDOM()
-		LIMIT 10`
+		LIMIT 4`
 
 	genres := []Genre{}
 	err := db.Select(&genres, sql)
