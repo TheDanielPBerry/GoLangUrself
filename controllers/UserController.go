@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	//"errors"
+	"errors"
 	//"html/template"
 	//"log"
 	"net/http"
@@ -93,6 +93,11 @@ func PostRegister(resp Response, req *http.Request) {
 	password := req.FormValue("password")
 	if err := validate.Password(password); err != nil {
 		failRegister(resp, err, email, fullName)
+		return
+	}
+	password_confirmation := req.FormValue("password_confirmation")
+	if password != password_confirmation {
+		failRegister(resp, errors.New("Password does not match confirmed password"), email, fullName)
 		return
 	}
 
