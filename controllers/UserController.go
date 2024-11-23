@@ -98,6 +98,7 @@ func PostRegister(resp Response, req *http.Request) {
 
 	if err:= validate.FullName(fullName); err != nil {
 		failRegister(resp, err, email, fullName)
+		return
 	}
 	user := models.User{FullName: fullName, Email: email, Password: password}
 	userId, err := models.CreateUser(user)

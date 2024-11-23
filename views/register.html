@@ -6,9 +6,9 @@
 </h2>
 <form id="register_form" action="/register" method="POST">
 
-	{{ if .PostBack.error }}
+	{{ if .error }}
 		<div class="error-container">
-			{{ .PostBack.error }}
+			{{ .error }}
 		</div>
 	{{ end }}
 
