@@ -154,6 +154,28 @@ func GetRecommendations(userId int) *[]Video {
 	return recs
 }
 
+func GetQueuedVideos(userId int) *[]Video {
+	db := GetDBContext()
+	sql := `SELECT VideoId AS VideoId
+		FROM WatchQueue
+		WHERE UserId=?
+		ORDER BY RANDOM()
+		LIMIT 20;`
+
+	stmt, err := db.Preparex(sql)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	videos := new([]Video)
+	err = stmt.Select(videos, userId)
+	if err != nil {
+		return nil
+	}
+	return videos
+}
+
 func GetGenreVideos(genreId int) *[]Video {
 	db := GetDBContext()
 	sql := `SELECT vg.VideoId AS VideoId

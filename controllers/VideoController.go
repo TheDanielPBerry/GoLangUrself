@@ -50,6 +50,11 @@ func ListVideos(resp Response, req *http.Request) {
 				resp.viewBag["forYou"] = recommendations
 			}
 		}
+
+		queuedVideos := models.GetQueuedVideos(userId)
+		if len(*queuedVideos) > 0 {
+			resp.viewBag["backlog"] = queuedVideos
+		}
 	} else {
 		resp.viewBag["mostPopular"] = mostPopular[0:10]
 	}
